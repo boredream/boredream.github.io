@@ -1,7 +1,7 @@
 {
-  "name": "Hux Blog",
-  "short_name": "Hux Blog",
-  "description": "About an engineer & designer who loves web.",
+  "name": "Boredream Blog",
+  "short_name": "Boredream Blog",
+  "description": "code and everything",
   "icons": [{
     "src": "icons/128.png",
     "sizes": "128x128",
