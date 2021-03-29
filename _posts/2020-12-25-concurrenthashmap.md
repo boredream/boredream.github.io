@@ -24,7 +24,7 @@ ConcurrentHashMap 可以理解为线程安全的 HashMap
 传入map，然后将所有方法都包一层synchronized关键字。本质和HashTable差不多
 
 ### ConcurrentHashMap原理
-线程安全的Hash表，不同java sdk下不同实现  
+直接粗暴加synchronize效率比较低，ConcurrentHashMap则是一种线程安全且效率相对较高的Hash表，在不同java sdk下有不同实现  
 ##### 1.7 segment锁
 每个segment都是个bucket集合table表，每个bucket都是个HashEntry的链表。  
 ![hashmap1](https://github.com/boredream/boredream.github.io/blob/master/img/in-post/hashmap1.jpg?raw=true)
@@ -41,7 +41,6 @@ public V put(K key, V value) {
 }
 /** Implementation for put and putIfAbsent */
 final V putVal(K key, V value, boolean onlyIfAbsent) {  //onlyIfAbsent:仅仅缺少的时候
-
 
     if (key == null || value == null) throw new NullPointerException(); //key ,value不允许为null
     int hash = spread(key.hashCode()); //两次hash，减少hash冲突，可以均匀分布
@@ -98,7 +97,6 @@ final V putVal(K key, V value, boolean onlyIfAbsent) {  //onlyIfAbsent:仅仅缺
                     }
                 }
             }
-
 
             //binCount != 0 说明向链表或者红黑树中添加或修改一个节点成功
             //binCount  == 0 说明 put 操作将一个新节点添加成为某个桶的首节点
