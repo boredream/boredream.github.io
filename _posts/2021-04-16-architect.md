@@ -13,36 +13,36 @@ tags:
 
 Android中的架构一路进化 MVC -> MVP -> MVVM 还有最新的方向 MVI
 
-为什么架构会不停的换呢？
-有什么区别？
-新的一定比旧的好吗？
-如何选择？如何使用？
+为什么架构会不停的换呢？  
+有什么区别？  
+新的一定比旧的好吗？  
+如何选择？如何使用？  
 
 以下主要以Android中各架构为例  
 
 ### MVC
-传统写法是在Activity中，在点击等事件后，先「处理数据」再「设置视图」
+传统写法是在Activity中，在点击等事件后，先「处理数据」再「设置视图」  
 此时Activity就相当于C，数据、视图逻辑都要做，在业务复杂时就会臃肿
   
-设计架构的目标是？
-让代码阅读性更好，问题更少修改扩展更容易。因此追求模块解耦，保证功能单一性。
+设计架构的目标是？  
+让代码阅读性更好，问题更少修改扩展更容易。因此追求模块解耦，保证功能单一性。  
 而这里C既要处理M又要处理V就不合适了，要将其分开，因此就诞生了MVP的概念。
 
 ### MVP
-让Presenter去处理M数据业务逻辑
-让Actvity/Fragment去具体实现V视图逻辑
+让Presenter去处理M数据业务逻辑  
+让Actvity/Fragment去具体实现V视图逻辑  
   
 这样数据业务类问题都去p定位，ui类问题都去v定位。还可以分别实现测试需求。
 
 #### MVP 具体实现
-MVP架构只是一种思想，可以有不同实现，谷歌官方给了最基础的实现和一些修改版
-* [谷歌官方MVP Demo](https://github.com/android/architecture-samples/tree/todo-mvp)
+MVP架构只是一种思想，可以有不同实现，谷歌官方给了最基础的实现和一些修改版  
+* [谷歌官方MVP Demo](https://github.com/android/architecture-samples/tree/todo-mvp)  
 
-* [谷歌官方MVP-Clean Demo](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+* [谷歌官方MVP-Clean Demo](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)  
 基于Clean架构思想，对MVP进一步分层，新建一个Domain层在P和M之间，里面以业务逻辑为粒度分成多个UseCase。因此对于复杂的业务，可以把多个Presenter中重复的代码提取出来。
 
 #### MVP 实践经验
-首先简单的业务就直接MVC了，如拉取数据然后无加工的直接显示到页面上。需要进一步处理数据进行复杂展示时才会使用MVP。
+首先简单的业务就直接MVC了，如拉取数据然后无加工的直接显示到页面上。需要进一步处理数据进行复杂展示时才会使用MVP。  
 1. 数据处理
 官方demo里其实对Model部分有进一步优化，不同业务都有对应的Repository类，里面进一步对数据进行了 缓存/远程/数据 不同来源的处理。我做的项目中因为只需要从服务器拉取，因此就省略了Repository类，直接在Presenter中处理远程数据。
 2. View生命周期
@@ -63,20 +63,20 @@ UI自动化测试适合稳定模块的回归测试。新开发的复杂模块可
 看上去和MVP没区别，都解决了M和V的隔离，VM类似于P用于处理业务逻辑。最大的不同在于VM和V是双向绑定的。
 
 #### MVVM 具体实现
-* [谷歌官方MVVM-DataBinding Demo](https://github.com/android/architecture-samples/tree/todo-mvvm-databinding)
+* [谷歌官方MVVM-DataBinding Demo](https://github.com/android/architecture-samples/tree/todo-mvvm-databinding)  
 * [谷歌官方MVVM-Live Demo](https://github.com/android/architecture-samples/tree/todo-mvvm-databinding)
 
-不同在于数据绑定的具体实现，是DataBinding，还是LiveData等。
-
-那么问题来了，为什么使用MVVM？ 
-MVC到MVP是因为要分离V和M，优化代码且可以单元测试，为什么一定要绑定V和M呢？
+不同在于数据绑定的具体实现，是DataBinding，还是LiveData等。  
+  
+那么问题来了，为什么使用MVVM？   
+MVC到MVP是因为要分离V和M，优化代码且可以单元测试，为什么一定要绑定V和M呢？  
 #### MVVM 优势
 1. 无需通过接口交互，不用创建那么多文件
 2. V与VM单向依赖，不像MVP里V和P互相持有接口引用，进一步解耦
 3. 节省代码量，开发效率更高
 
 ### 总结
-回头开头的问题
+回头开头的问题  
 #### 为什么架构会不停的换呢？
 因为随着业务的逐步复杂，旧的架构耦合性强，代码越来越臃肿。为了提升代码阅读性，迭代开发更容易，因此追求模块更高的解耦程度。
 
