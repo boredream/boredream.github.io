@@ -12,11 +12,10 @@ tags:
 ---
 
 Android中的架构一路进化 MVC -> MVP -> MVVM 还有最新的方向 MVI
-
-为什么架构会不停的换呢？  
+ 
 有什么区别？  
-新的一定比旧的好吗？  
-如何选择？如何使用？  
+为什么会进化？ 
+如何选择使用？  
 
 以下主要以Android中各架构为例  
 
@@ -60,37 +59,41 @@ UI自动化测试适合稳定模块的回归测试。新开发的复杂模块可
 
 
 ### MVVM
-看上去和MVP没区别，都解决了M和V的隔离，VM类似于P用于处理业务逻辑。最大的不同在于VM和V是双向绑定的。
+看上去和MVP没区别，都解决了M和V的隔离，VM类似于P用于处理业务逻辑。最大的不同在于VM和V是双向绑定的，那只多了个绑定有啥意义？  
+MVP最本质的问题其实是在于：处理业务逻辑的P和处理视图的V相互引用，不符合单向依赖的原则。  
+而MVVM解决了这个问题，尤其从下面的MVVM-RxJava的代码就可以感受到，V持有VM的引用 而 VM对V是无直接感知的，不像MVP里V和P是互相持有。  
+![MVVM架构图](https://developer.android.com/topic/libraries/architecture/images/final-architecture.png)
+
+#### MVVM 优势
+1. 不用像MVP那样创建很多文件
+2. V与VM单向依赖，符合单向依赖原则
+3. 数据绑定部分可以节省代码量，提升开发效率
+4. 官方支持，教程、组件、Demo [Android官方应用架构指南](https://developer.android.com/jetpack/guide)
 
 #### MVVM 具体实现
 * [谷歌官方MVVM-DataBinding Demo](https://github.com/android/architecture-samples/tree/todo-mvvm-databinding)  
 * [谷歌官方MVVM-Live Demo](https://github.com/android/architecture-samples/tree/todo-mvvm-databinding)
+* [谷歌官方MVVM-RxJava Demo](https://github.com/android/architecture-samples/tree/dev-todo-mvvm-rxjava)
 
-不同在于数据绑定的具体实现，是DataBinding，还是LiveData等。  
-  
-那么问题来了，为什么使用MVVM？   
-MVC到MVP是因为要分离V和M，优化代码且可以单元测试，为什么一定要绑定V和M呢？  
-#### MVVM 优势
-1. 无需通过接口交互，不用创建那么多文件
-2. V与VM单向依赖，不像MVP里V和P互相持有接口引用，进一步解耦
-3. 节省代码量，开发效率更高
 
 ### 总结
 回头开头的问题  
-#### 为什么架构会不停的换呢？
-因为随着业务的逐步复杂，旧的架构耦合性强，代码越来越臃肿。为了提升代码阅读性，迭代开发更容易，因此追求模块更高的解耦程度。
 
 #### 有什么区别？
-前面已经挨个介绍过了。MVC MVP MVVM 其实本质上都差不多，将视图、逻辑、数据进行拆分解耦。只是MVP MVVM相对于MVC在视图和逻辑数据层间解耦的更彻底。
+前面已经挨个介绍过了。MVC MVP MVVM 其实本质上都差不多，将视图、逻辑、数据进行拆分解耦。MVP在MVC的基础上对数据和视图分离的更清楚。而MVVM则又在MVP基础上，更清晰的实现了单向依赖，还做了其它优化。
 
-#### 新的一定比旧的好吗？
-不一定，越来越细化的分层也会带来新的问题，如MVP中文件过多，MVVM的调试更麻烦以及性能也有损耗等。
+#### 为什么会进化？  
+因为随着业务的逐步复杂，旧的架构耦合性强，代码越来越臃肿。为了提升代码阅读性，迭代开发更容易，所以要不停进化架构。
 
-#### 如何选择？
-为什么架构要进化，是因为业务上太复杂已有的架构无法满足。所以当你的业务比较简单时，MVC即可。或者项目里有的模块复杂可以MVVM，有的模块简单就直接MVC。此外从实际开发角度，还要考虑社区完善度，如MVVM有个优势是，谷歌官方Jetpack库里包含的各种具体方案。
+#### 如何选择？  
+1. 看实际项目需求，不一定用最新的，也不一定只用一种。当你的业务比较简单时，MVC即可，如果有的模块复杂可以MVVM。  
+2. 不能一味追求新的架构，新架构也会有新的问题，如MVP中文件过多，MVVM的调试更麻烦以及性能也有损耗等。  
+3. 从实际开发角度，还要考虑社区完善度，如MVVM有个优势是，谷歌官方的支持。
 
 #### 如何使用？
-首先自然是根据实际情况选不同架构，然后可以基于官方的架构Demo去修改，不用完整copy，可按需组装。如不需要数据库/缓存部分就不用写Repository，如果有业务逻辑要复用可以参考Clean架构的UseCase设计，也可以用Repository实现复用。如果不喜欢Databinding LiveData的方式，也可以自己RxJava等方式实现等等。主要是掌握思想，不要太限制于具体实现方式，抓住核心即可 解耦、单一、复用。
+建议MVC+MVVM混合，具体到模块据实际情况选择。  
+MVVM部分基于官方的架构，不用完整copy，可按需组装。如不需要数据库/缓存部分就不用写Repository，如果有业务逻辑要复用可以参考Clean架构的UseCase设计，也可以直接用Repository实现。如果不喜欢Databinding LiveData的方式，也可以自己RxJava等方式实现等等。  
+主要是掌握思想，不要太限制于具体实现方式，比如MVC + UseCase这样可以行。抓住核心即可 模块解耦、功能单一、方便复用。
 
 ### 发展
 21年初官方推出了Jetpack Compose的Beta版，是一种新的声明式UI方案。看了谷歌compose开发团队的采访，提到了新的MVI的架构设计方向，期待+观望~
